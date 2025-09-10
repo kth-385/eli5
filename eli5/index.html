@@ -234,6 +234,16 @@
             margin: 20px 0;
         }
         
+        .debug-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: none;
+        }
+        
         footer {
             text-align: center;
             margin-top: 40px;
@@ -297,6 +307,8 @@
             Something went wrong. Please try again.
         </div>
         
+        <div class="debug-info" id="debugInfo"></div>
+        
         <div class="output-area">
             <h3><span class="icon">🧸</span> Simple Explanation:</h3>
             <div id="outputText">Your simplified explanation will appear here...</div>
@@ -314,6 +326,7 @@
             const outputText = document.getElementById('outputText');
             const loader = document.getElementById('loader');
             const errorMsg = document.getElementById('errorMsg');
+            const debugInfo = document.getElementById('debugInfo');
             
             // Example texts for user to try
             const exampleTexts = [
@@ -324,6 +337,13 @@
             
             // Set a random example text
             inputText.value = exampleTexts[Math.floor(Math.random() * exampleTexts.length)];
+            
+            // For debugging - show if we're in development or production
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                debugInfo.style.display = 'block';
+                debugInfo.innerHTML = '<strong>Debug Mode:</strong> Running on localhost. Functions will not work until deployed to Netlify.';
+            }
             
             simplifyBtn.addEventListener('click', async function() {
                 const text = inputText.value.trim();
@@ -340,14 +360,27 @@
                 simplifyBtn.disabled = true;
                 
                 try {
-                    // Call the Netlify function
+                    // For local testing, use a simulated response
+                    if (isLocalhost) {
+                        debugInfo.innerHTML += '<br><strong>Local simulation:</strong> Using mock response (will work on Netlify)';
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        const simulatedResponse = generateSimulatedResponse(text);
+                        typeResponse(simulatedResponse);
+                        return;
+                    }
+                    
+                    // Call the Netlify function (only works when deployed)
                     const response = await fetch('/.netlify/functions/simplify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: text })
                     });
                     
-                    if (!response.ok) throw new Error('API error');
+                    if (!response.ok) {
+                        const errorData = await response.text();
+                        throw new Error(`Server error: ${response.status} - ${errorData}`);
+                    }
+                    
                     const data = await response.json();
                     
                     // Type out the response
@@ -355,10 +388,33 @@
                 } catch (error) {
                     console.error('Error:', error);
                     errorMsg.style.display = 'block';
+                    errorMsg.innerHTML = `Error: ${error.message}.<br>Make sure you've deployed to Netlify and set up the function correctly.`;
                     loader.style.display = 'none';
                     simplifyBtn.disabled = false;
+                    
+                    // Show debug info
+                    debugInfo.style.display = 'block';
+                    debugInfo.innerHTML = `<strong>Debug Info:</strong> ${error.message}`;
                 }
             });
+            
+            // Function to generate a simulated response for local testing
+            function generateSimulatedResponse(text) {
+                const responses = [
+                    "This is about how plants eat sunlight! Just like you need food to grow, plants use sunlight to make their food. They take in sunlight, air, and water to make energy so they can grow big and strong!",
+                    "This is like a super big playground where all computers can talk to each other and share games, pictures, and videos. It's like when you and your friends share toys, but for computers all around the world!",
+                    "Imagine you have a special notebook that everyone in your class has a copy of. When you add a new drawing, everyone adds the same drawing to their notebook. This way, no one can change your drawing without everyone knowing!"
+                ];
+                
+                // Pick a response based on text content
+                if (text.toLowerCase().includes('photo') || text.toLowerCase().includes('plant')) {
+                    return responses[0];
+                } else if (text.toLowerCase().includes('internet') || text.toLowerCase().includes('network')) {
+                    return responses[1];
+                } else {
+                    return responses[2];
+                }
+            }
             
             // Function to type out response character by character
             function typeResponse(text) {
