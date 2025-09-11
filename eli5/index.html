@@ -241,7 +241,6 @@
             padding: 10px;
             background: #f5f5f5;
             border-radius: 8px;
-            display: none;
         }
         
         footer {
@@ -307,7 +306,9 @@
             Something went wrong. Please try again.
         </div>
         
-        <div class="debug-info" id="debugInfo"></div>
+        <div class="debug-info" id="debugInfo">
+            <strong>Debug Information:</strong> This is a test version with simulated responses.
+        </div>
         
         <div class="output-area">
             <h3><span class="icon">🧸</span> Simple Explanation:</h3>
@@ -316,7 +317,7 @@
     </div>
     
     <footer>
-        <p>Powered by Gemini AI • Free forever for learning • Made with ❤️ for curious minds</p>
+        <p>Powered by Simulated AI • Free forever for learning • Made with ❤️ for curious minds</p>
     </footer>
 
     <script>
@@ -338,13 +339,6 @@
             // Set a random example text
             inputText.value = exampleTexts[Math.floor(Math.random() * exampleTexts.length)];
             
-            // For debugging - show if we're in development or production
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            if (isLocalhost) {
-                debugInfo.style.display = 'block';
-                debugInfo.innerHTML = '<strong>Debug Mode:</strong> Running on localhost. Functions will not work until deployed to Netlify.';
-            }
-            
             simplifyBtn.addEventListener('click', async function() {
                 const text = inputText.value.trim();
                 
@@ -360,50 +354,32 @@
                 simplifyBtn.disabled = true;
                 
                 try {
-                    // For local testing, use a simulated response
-                    if (isLocalhost) {
-                        debugInfo.innerHTML += '<br><strong>Local simulation:</strong> Using mock response (will work on Netlify)';
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                        const simulatedResponse = generateSimulatedResponse(text);
-                        typeResponse(simulatedResponse);
-                        return;
-                    }
+                    // Simulate API call delay (2-4 seconds)
+                    const delay = Math.floor(Math.random() * 2000) + 2000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
                     
-                    // Call the Netlify function (only works when deployed)
-                    const response = await fetch('/.netlify/functions/simplify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text: text })
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.text();
-                        throw new Error(`Server error: ${response.status} - ${errorData}`);
-                    }
-                    
-                    const data = await response.json();
+                    // Generate a simulated response
+                    const simulatedResponse = generateSimulatedResponse(text);
                     
                     // Type out the response
-                    typeResponse(data.simplified);
+                    typeResponse(simulatedResponse);
                 } catch (error) {
                     console.error('Error:', error);
                     errorMsg.style.display = 'block';
-                    errorMsg.innerHTML = `Error: ${error.message}.<br>Make sure you've deployed to Netlify and set up the function correctly.`;
+                    errorMsg.innerHTML = `Error: ${error.message}`;
                     loader.style.display = 'none';
                     simplifyBtn.disabled = false;
-                    
-                    // Show debug info
-                    debugInfo.style.display = 'block';
-                    debugInfo.innerHTML = `<strong>Debug Info:</strong> ${error.message}`;
                 }
             });
             
-            // Function to generate a simulated response for local testing
+            // Function to generate a simulated response for testing
             function generateSimulatedResponse(text) {
                 const responses = [
                     "This is about how plants eat sunlight! Just like you need food to grow, plants use sunlight to make their food. They take in sunlight, air, and water to make energy so they can grow big and strong!",
                     "This is like a super big playground where all computers can talk to each other and share games, pictures, and videos. It's like when you and your friends share toys, but for computers all around the world!",
-                    "Imagine you have a special notebook that everyone in your class has a copy of. When you add a new drawing, everyone adds the same drawing to their notebook. This way, no one can change your drawing without everyone knowing!"
+                    "Imagine you have a special notebook that everyone in your class has a copy of. When you add a new drawing, everyone adds the same drawing to their notebook. This way, no one can change your drawing without everyone knowing!",
+                    "This is about how things change and grow over time, just like how you're getting bigger and learning new things every day. It's all about how stuff becomes different as time goes by!",
+                    "It's like when you mix different colors of playdough together to make a new color. This is about mixing ideas to make something new and exciting that nobody has seen before!"
                 ];
                 
                 // Pick a response based on text content
@@ -411,8 +387,14 @@
                     return responses[0];
                 } else if (text.toLowerCase().includes('internet') || text.toLowerCase().includes('network')) {
                     return responses[1];
-                } else {
+                } else if (text.toLowerCase().includes('blockchain') || text.toLowerCase().includes('crypt')) {
                     return responses[2];
+                } else if (text.toLowerCase().includes('time') || text.toLowerCase().includes('change')) {
+                    return responses[3];
+                } else {
+                    // Pick a random response for other text
+                    const index = Math.floor(Math.random() * responses.length);
+                    return responses[index];
                 }
             }
             
