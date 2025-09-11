@@ -50,7 +50,6 @@
             color: var(--primary);
             font-size: 2.8rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
         
         .subtitle {
@@ -59,20 +58,8 @@
             margin-bottom: 20px;
         }
         
-        .character {
-            font-size: 3rem;
-            margin: 15px 0;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
         .input-area {
             margin-bottom: 25px;
-            position: relative;
         }
         
         textarea {
@@ -85,13 +72,6 @@
             font-family: inherit;
             box-sizing: border-box;
             resize: vertical;
-            transition: border-color 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
         }
         
         .button-container {
@@ -107,34 +87,13 @@
             border-radius: 50px;
             font-size: 1.3rem;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.3s;
             font-family: inherit;
-            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
         }
         
         button:hover {
             background-color: var(--secondary);
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(52, 168, 83, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(1px);
-        }
-        
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        button .icon {
-            margin-right: 10px;
-            font-size: 1.5rem;
         }
         
         .output-area {
@@ -144,7 +103,6 @@
             min-height: 150px;
             margin-top: 20px;
             border: 3px dashed var(--accent);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         
         .output-area h3 {
@@ -152,95 +110,6 @@
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .output-area h3 .icon {
-            margin-right: 10px;
-        }
-        
-        .loader {
-            display: none;
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .loader-dots {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-        
-        .loader-dots div {
-            position: absolute;
-            top: 33px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--primary);
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-        }
-        
-        .loader-dots div:nth-child(1) {
-            left: 8px;
-            animation: loader-dots1 0.6s infinite;
-        }
-        
-        .loader-dots div:nth-child(2) {
-            left: 8px;
-            animation: loader-dots2 0.6s infinite;
-        }
-        
-        .loader-dots div:nth-child(3) {
-            left: 32px;
-            animation: loader-dots2 0.6s infinite;
-        }
-        
-        .loader-dots div:nth-child(4) {
-            left: 56px;
-            animation: loader-dots3 0.6s infinite;
-        }
-        
-        @keyframes loader-dots1 {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes loader-dots3 {
-            0% { transform: scale(1); }
-            100% { transform: scale(0); }
-        }
-        
-        @keyframes loader-dots2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(24px, 0); }
-        }
-        
-        .loader p {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-        
-        .error {
-            color: var(--error);
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: rgba(234, 67, 53, 0.1);
-            display: none;
-            margin: 20px 0;
-        }
-        
-        .debug-info {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 20px;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 8px;
         }
         
         footer {
@@ -251,7 +120,6 @@
             width: 100%;
             max-width: 800px;
             padding: 20px;
-            border-top: 2px solid var(--accent);
         }
         
         @media (max-width: 650px) {
@@ -266,11 +134,6 @@
             .subtitle {
                 font-size: 1.1rem;
             }
-            
-            button {
-                padding: 12px 25px;
-                font-size: 1.1rem;
-            }
         }
     </style>
 </head>
@@ -279,7 +142,7 @@
         <header>
             <h1>Explain Like I'm 5</h1>
             <p class="subtitle">Making complicated things simple for little minds!</p>
-            <div class="character">🧒🤖</div>
+            <div>🧒🤖</div>
         </header>
         
         <div class="input-area">
@@ -288,36 +151,18 @@
         
         <div class="button-container">
             <button id="simplifyBtn">
-                <span class="icon">✨</span> Make It Simple!
+                Make It Simple!
             </button>
         </div>
         
-        <div class="loader" id="loader">
-            <div class="loader-dots">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <p>Thinking like a 5-year-old...</p>
-        </div>
-        
-        <div class="error" id="errorMsg">
-            Something went wrong. Please try again.
-        </div>
-        
-        <div class="debug-info" id="debugInfo">
-            <strong>Debug Information:</strong> This is a test version with simulated responses.
-        </div>
-        
         <div class="output-area">
-            <h3><span class="icon">🧸</span> Simple Explanation:</h3>
+            <h3>Simple Explanation:</h3>
             <div id="outputText">Your simplified explanation will appear here...</div>
         </div>
     </div>
     
     <footer>
-        <p>Powered by Simulated AI • Free forever for learning • Made with ❤️ for curious minds</p>
+        <p>Made with ❤️ for curious minds</p>
     </footer>
 
     <script>
@@ -325,9 +170,6 @@
             const inputText = document.getElementById('inputText');
             const simplifyBtn = document.getElementById('simplifyBtn');
             const outputText = document.getElementById('outputText');
-            const loader = document.getElementById('loader');
-            const errorMsg = document.getElementById('errorMsg');
-            const debugInfo = document.getElementById('debugInfo');
             
             // Example texts for user to try
             const exampleTexts = [
@@ -339,40 +181,26 @@
             // Set a random example text
             inputText.value = exampleTexts[Math.floor(Math.random() * exampleTexts.length)];
             
-            simplifyBtn.addEventListener('click', async function() {
+            simplifyBtn.addEventListener('click', function() {
                 const text = inputText.value.trim();
                 
                 if (!text) {
-                    outputText.innerHTML = '<p style="color: var(--error);">Please enter some text to simplify.</p>';
+                    outputText.innerHTML = 'Please enter some text to simplify.';
                     return;
                 }
                 
-                // Show loading, hide error and previous output
-                loader.style.display = 'block';
-                errorMsg.style.display = 'none';
-                outputText.innerHTML = '';
+                outputText.innerHTML = 'Thinking like a 5-year-old...';
                 simplifyBtn.disabled = true;
                 
-                try {
-                    // Simulate API call delay (2-4 seconds)
-                    const delay = Math.floor(Math.random() * 2000) + 2000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    
-                    // Generate a simulated response
+                // Simulate processing delay
+                setTimeout(() => {
                     const simulatedResponse = generateSimulatedResponse(text);
-                    
-                    // Type out the response
-                    typeResponse(simulatedResponse);
-                } catch (error) {
-                    console.error('Error:', error);
-                    errorMsg.style.display = 'block';
-                    errorMsg.innerHTML = `Error: ${error.message}`;
-                    loader.style.display = 'none';
+                    outputText.innerHTML = simulatedResponse;
                     simplifyBtn.disabled = false;
-                }
+                }, 1500);
             });
             
-            // Function to generate a simulated response for testing
+            // Function to generate a simulated response
             function generateSimulatedResponse(text) {
                 const responses = [
                     "This is about how plants eat sunlight! Just like you need food to grow, plants use sunlight to make their food. They take in sunlight, air, and water to make energy so they can grow big and strong!",
@@ -396,23 +224,6 @@
                     const index = Math.floor(Math.random() * responses.length);
                     return responses[index];
                 }
-            }
-            
-            // Function to type out response character by character
-            function typeResponse(text) {
-                let i = 0;
-                outputText.innerHTML = '';
-                
-                const interval = setInterval(function() {
-                    if (i < text.length) {
-                        outputText.innerHTML += text.charAt(i);
-                        i++;
-                    } else {
-                        clearInterval(interval);
-                        loader.style.display = 'none';
-                        simplifyBtn.disabled = false;
-                    }
-                }, 20);
             }
         });
     </script>
